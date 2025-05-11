@@ -1,0 +1,32 @@
+[workspace]
+resolver = "2"
+members = [
+  "ggml-all-sys-2",
+  "llama-cpp-ggml",
+  "whisper-cpp-ggml",
+]
+
+[workspace.dependencies]
+# core library deps
+thiserror = "1"
+tracing = "0.1"
+tracing-core = "0.1"
+
+# examples and benchmarks
+hf-hub = { version = "0.3.2" }
+criterion = "0.5.1"
+pprof = "0.13.0"
+bindgen = "0.69.5"
+cc = "1.2.19"
+anyhow = "1.0.98"
+clap = "4.5.36"
+encoding_rs = "0.8.35"
+tracing-subscriber = { version = "0.3", features = ["json"] }
+ggml-all-sys-2 = {path = "./ggml-all-sys-2"} 
+
+[workspace.lints.rust]
+missing_docs = { level = "warn" }
+missing_debug_implementations = { level = "warn" }
+
+[workspace.lints.clippy]
+pedantic = { level = "warn" }

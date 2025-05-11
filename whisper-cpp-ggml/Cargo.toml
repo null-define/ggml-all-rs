@@ -1,0 +1,38 @@
+[package]
+name = "whisper-cpp-ggml"
+version = "0.14.2"
+edition = "2021"
+description = "Rust bindings for whisper.cpp"
+license = "Unlicense"
+documentation = "https://docs.rs/whisper-rs"
+repository = "https://github.com/tazz4843/whisper-rs"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+ggml-all-sys-2 = { workspace = true}
+log = { version = "0.4", optional = true }
+tracing = { version = "0.1", optional = true }
+
+[dev-dependencies]
+hound = "3.5.0"
+rand = "0.8.4"
+
+[features]
+default = []
+
+raw-api = []
+cuda = ["ggml-all-sys-2/cuda", ]
+hipblas = ["ggml-all-sys-2/hipblas", ]
+metal = ["ggml-all-sys-2/metal", ]
+vulkan = ["ggml-all-sys-2/vulkan", ]
+openmp = ["ggml-all-sys-2/openmp"]
+test-with-tiny-model = []
+
+# Bring logs into Rust via the log crate. *Warning*: not mutually exclusive with tracing_backend,
+# will result in duplicate logs if both are enabled and one consumes logs from the other.
+log_backend = ["dep:log"]
+
+# Bring logs into Rust via the tracing crate. *Warning*: not mutually exclusive with log_backend,
+# will result in duplicate logs if both are enabled and one consumes logs from the other.
+tracing_backend = ["dep:tracing"]

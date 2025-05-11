@@ -1,0 +1,9 @@
+[submodule "ggml-all-sys-2/cc/ggml"]
+	path = ggml-all-sys-2/cc/ggml
+	url = https://github.com/ggml-org/ggml.git
+[submodule "ggml-all-sys-2/cc/models/whisper.cpp"]
+	path = ggml-all-sys-2/cc/models/whisper.cpp
+	url = https://github.com/ggml-org/whisper.cpp.git
+[submodule "ggml-all-sys-2/cc/models/llama.cpp"]
+	path = ggml-all-sys-2/cc/models/llama.cpp
+	url = https://github.com/ggml-org/llama.cpp.git
