@@ -1,6 +1,4 @@
 #![allow(clippy::uninlined_format_args)]
-#![cfg_attr(test, feature(test))]
-
 mod common_logging;
 mod error;
 mod ggml_logging_hook;

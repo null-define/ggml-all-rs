@@ -69,8 +69,6 @@ mod test {
     use rand::Rng;
     use std::hint::black_box;
 
-    extern crate test;
-
     fn random_sample_data<T>() -> Vec<T>
     where
         Standard: Distribution<T>,
@@ -90,23 +88,5 @@ mod test {
         let samples = random_sample_data::<f32>();
         let mono = convert_stereo_to_mono_audio(&samples);
         assert!(mono.is_err());
-    }
-
-    #[bench]
-    pub fn bench_stereo_to_mono(b: &mut test::Bencher) {
-        let samples = random_sample_data::<f32>();
-        b.iter(|| black_box(convert_stereo_to_mono_audio(black_box(&samples))));
-    }
-
-    #[bench]
-    pub fn bench_integer_to_float(b: &mut test::Bencher) {
-        let samples = random_sample_data::<i16>();
-        let mut output = vec![0.0f32; samples.len()];
-        b.iter(|| {
-            black_box(convert_integer_to_float_audio(
-                black_box(&samples),
-                black_box(&mut output),
-            ))
-        });
     }
 }
