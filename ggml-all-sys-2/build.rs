@@ -119,6 +119,9 @@ fn main() {
         .expect("Failed to generate bindings");
 
     println!("cargo:rerun-if-changed=wrapper.h");
+    println!("cargo:rerun-if-changed={}", cc_root.join("ggml/src").display());
+    println!("cargo:rerun-if-changed={}", cc_root.join("models/llama.cpp/src").display());
+    println!("cargo:rerun-if-changed={}", cc_root.join("models/llama.cpp/whisper.cpp/src").display());
 
     // Write the generated bindings to an output file
     let bindings_path = out.join("bindings.rs");
