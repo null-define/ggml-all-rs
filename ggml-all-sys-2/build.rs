@@ -21,13 +21,27 @@ fn main() {
         }
     }
     let target = env::var("TARGET").unwrap();
+    let arch: &str = target.split('-').nth(0).expect("Invalid TARGET format");
+
+    let out = PathBuf::from(env::var("OUT_DIR").unwrap());
+    let manifest_dir = env::var("CARGO_MANIFEST_DIR").expect("Failed to get CARGO_MANIFEST_DIR");
+    let cc_root = PathBuf::from(manifest_dir.to_string()).join("cc");
+
+    let mut config = Config::new(&cc_root);
+
     // Link C++ standard library
     if let Some(cpp_stdlib) = get_cpp_link_stdlib(&target) {
         println!("cargo:rustc-link-lib=dylib={}", cpp_stdlib);
     }
     // Link macOS Accelerate framework for matrix calculations
     if target.contains("apple") {
-        println!("cargo:rustc-link-lib=framework=Accelerate");
+        if arch == "x86_64" {
+            //set GGML_ACCELERATE off in x86
+            config.define("GGML_ACCELERATE", "OFF");
+            config.define("GGML_BLAS", "OFF");
+        } else {
+            println!("cargo:rustc-link-lib=framework=Accelerate");
+        }
         #[cfg(feature = "metal")]
         {
             println!("cargo:rustc-link-lib=framework=Foundation");
@@ -82,15 +96,8 @@ fn main() {
     {
         if target.contains("gnu") {
             println!("cargo:rustc-link-lib=gomp");
-        } else if target.contains("apple") {
-            println!("cargo:rustc-link-lib=omp");
-            println!("cargo:rustc-link-search=/opt/homebrew/opt/libomp/lib");
         }
     }
-
-    let out = PathBuf::from(env::var("OUT_DIR").unwrap());
-    let manifest_dir = env::var("CARGO_MANIFEST_DIR").expect("Failed to get CARGO_MANIFEST_DIR");
-    let cc_root = PathBuf::from(manifest_dir.to_string()).join("cc");
 
     let bindings = bindgen::Builder::default().header("wrapper.h");
 
@@ -119,9 +126,18 @@ fn main() {
         .expect("Failed to generate bindings");
 
     println!("cargo:rerun-if-changed=wrapper.h");
-    println!("cargo:rerun-if-changed={}", cc_root.join("ggml/src").display());
-    println!("cargo:rerun-if-changed={}", cc_root.join("models/llama.cpp/src").display());
-    println!("cargo:rerun-if-changed={}", cc_root.join("models/llama.cpp/whisper.cpp/src").display());
+    println!(
+        "cargo:rerun-if-changed={}",
+        cc_root.join("ggml/src").display()
+    );
+    println!(
+        "cargo:rerun-if-changed={}",
+        cc_root.join("models/llama.cpp/src").display()
+    );
+    println!(
+        "cargo:rerun-if-changed={}",
+        cc_root.join("models/llama.cpp/whisper.cpp/src").display()
+    );
 
     // Write the generated bindings to an output file
     let bindings_path = out.join("bindings.rs");
@@ -132,8 +148,6 @@ fn main() {
     if env::var("DOCS_RS").is_ok() {
         return;
     }
-
-    let mut config = Config::new(&cc_root);
 
     config
         .profile("Release")
