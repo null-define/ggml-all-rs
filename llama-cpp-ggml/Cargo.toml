@@ -19,7 +19,7 @@ tracing-core = { workspace = true }
 encoding_rs = { workspace = true }
 
 [features]
-default = ["openmp", "android-shared-stdcxx"]
+default = ["android-shared-stdcxx"]
 cuda = ["ggml-all-sys-2/cuda", ]
 hipblas = ["ggml-all-sys-2/hipblas", ]
 metal = ["ggml-all-sys-2/metal", ]
