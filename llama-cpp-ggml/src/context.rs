@@ -5,7 +5,6 @@ use std::num::NonZeroI32;
 use std::ptr::NonNull;
 use std::slice;
 use std::sync::{Arc, Mutex};
-use std::time::Instant;
 
 use crate::llama_batch::LlamaBatch;
 use crate::model::{LlamaLoraAdapter, LlamaModel};
